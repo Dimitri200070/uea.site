@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UEA Universiapolis | Officiel</title>
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        :root { 
+            --uea-rose: #f472b6; 
+            --uea-rose-dark: #db2777;
+            --uea-bg: #ffffff;
+            --uea-text: #1f2937;
+        }
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        body {
+            background-color: var(--uea-bg);
+            color: var(--uea-text);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .nav-active {
+            color: var(--uea-rose) !important;
+            border-bottom: 3px solid var(--uea-rose);
+        }
+
+        .pink-gradient {
+            background: linear-gradient(135deg, #f472b6 0%, #db2777 100%);
+        }
+
+        .text-pink {
+            color: var(--uea-rose);
+        }
+
+        /* ACTIVITIES */
+
+        .activity-container {
+            transition: all 0.4s ease;
+            border: 1px solid #fce7f3;
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .activity-container:hover {
+            border-color: var(--uea-rose);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(244, 114, 182, 0.2);
+        }
+
+        /* DETAIL MODAL */
+
+        #detail-view {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            z-index: 9999;
+            overflow-y: auto;
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 10000;
+            background: var(--uea-text);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* MOBILE MENU */
+
+        .mobile-menu {
+            display: none;
+            flex-direction: column;
+            background: white;
+            width: 100%;
+            padding: 20px;
+            border-top: 1px solid #fce7f3;
+        }
+
+        .mobile-menu button {
+            padding: 15px;
+            text-align: left;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        /* RESPONSIVE */
+
+        @media(max-width:768px){
+
+            .desktop-menu{
+                display:none;
+            }
+
+            .mobile-toggle{
+                display:block;
+            }
+
+            .mobile-menu.active{
+                display:flex;
+            }
+
+            h1{
+                font-size:42px !important;
+                line-height:1.1;
+            }
+
+            h2{
+                font-size:34px !important;
+            }
+
+            .hero-text{
+                font-size:16px !important;
+                padding:0 10px;
+            }
+
+            .back-btn{
+                padding:10px 18px;
+                font-size:14px;
+            }
+
+            #det-title{
+                font-size:32px !important;
+            }
+
+            #det-desc{
+                font-size:16px !important;
+            }
+
+            .contact-box{
+                padding:30px 20px !important;
+            }
+
+            .contact-box p{
+                font-size:18px !important;
+                word-break: break-word;
+            }
+
+            footer p{
+                letter-spacing:2px !important;
+                font-size:10px !important;
+            }
+        }
+
+        @media(min-width:769px){
+            .mobile-toggle{
+                display:none;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+
+    <nav class="bg-white/80 backdrop-blur-md border-b border-pink-100 sticky top-0 z-50">
+
+        <div class="max-w-7xl mx-auto px-4 md:px-6 flex justify-between items-center h-20">
+
+            <!-- LOGO -->
+
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="navigate('accueil')">
+                <img src="1000537935.png"
+                     class="w-12 h-12 rounded-full border-2 border-pink-400 object-cover">
+
+                <span class="text-xl md:text-2xl font-black tracking-tighter uppercase italic">
+                    UEA <span class="text-pink">UNI</span>
+                </span>
+            </div>
+
+            <!-- DESKTOP MENU -->
+
+            <div class="desktop-menu hidden md:flex space-x-8 text-xs font-bold uppercase tracking-widest">
+
+                <button onclick="navigate('accueil')" id="nav-accueil" class="hover:text-pink">
+                    Accueil
+                </button>
+
+                <button onclick="navigate('bureau')" id="nav-bureau" class="hover:text-pink">
+                    Le Bureau
+                </button>
+
+                <button onclick="navigate('activites')" id="nav-activites" class="hover:text-pink">
+                    Activités
+                </button>
+
+                <button onclick="navigate('about')" id="nav-about" class="hover:text-pink">
+                    Contact
+                </button>
+
+            </div>
+
+            <!-- MOBILE BUTTON -->
+
+            <button class="mobile-toggle text-3xl text-pink"
+                    onclick="toggleMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+
+        </div>
+
+        <!-- MOBILE MENU -->
+
+        <div id="mobileMenu" class="mobile-menu">
+
+            <button onclick="navigateMobile('accueil')">Accueil</button>
+            <button onclick="navigateMobile('bureau')">Le Bureau</button>
+            <button onclick="navigateMobile('activites')">Activités</button>
+            <button onclick="navigateMobile('about')">Contact</button>
+
+        </div>
+
+    </nav>
+
+    <!-- DETAIL VIEW -->
+
+    <div id="detail-view">
+
+        <div onclick="closeDetails()" class="back-btn">
+            <i class="fas fa-arrow-left mr-2"></i> RETOUR
+        </div>
+
+        <div class="max-w-4xl mx-auto py-20 px-6 text-center">
+
+            <img id="det-img"
+                 src=""
+                 class="w-full rounded-3xl border-4 border-white shadow-2xl mb-10">
+
+            <h2 id="det-title"
+                class="text-5xl font-black uppercase italic mb-6 text-gray-900">
+            </h2>
+
+            <p id="det-desc"
+               class="text-xl text-gray-600 leading-relaxed">
+            </p>
+
+        </div>
+
+    </div>
+
+    <!-- MAIN -->
+
+    <main id="main-content" class="min-h-[80vh]"></main>
+
+    <!-- FOOTER -->
+
+    <footer class="py-10 text-center bg-pink-50 border-t border-pink-100 mt-20">
+
+        <img src="1000537935.png"
+             class="w-16 mx-auto mb-4 grayscale hover:grayscale-0 transition">
+
+        <p class="text-pink font-bold text-[10px] tracking-[0.4em] uppercase">
+            © 2026 UEA Universiapolis Agadir
+        </p>
+
+    </footer>
+
+    <script>
+
+        /* MOBILE MENU */
+
+        function toggleMenu(){
+            document.getElementById('mobileMenu').classList.toggle('active');
+        }
+
+        function navigateMobile(id){
+            navigate(id);
+            document.getElementById('mobileMenu').classList.remove('active');
+        }
+
+        /* ACTIVITIES */
+
+        const activities = {
+
+            halloween: {
+                title: "Movie Night Halloween",
+                img: "1000959451.jpg",
+                desc: "Retour sur une soirée d'hallowen le 31 octobre ayant reuni plus de 90 étudiants a la salle culturelle d'universiapolis avec une soirée dansante et projection de film"
+            },
+
+            stargame: {
+                title: "All Star Game",
+                img: "1000959452.jpg",
+                desc: "L'évenement sportif qui a su se positionner comme l'une des plus grande rencontre sportive au sein d'universiapolis . Elle a rassembler enormement d'etudiant venu s'affronter autour du ballon rond"
+            },
+
+            lastdance: {
+                title: "The Last Dance 2",
+                img: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30",
+                desc: "Soirée de fin d'année organiser au chapiteau d'universiapolis en collaboration avec l'association des etudiants ivoirien a agadir ayant réuni pres de 150 étudiants"
+            }
+
+        };
+
+        /* PAGES */
+
+        const pages = {
+
+            accueil: `
+                <div class="py-20 md:py-32 px-6 text-center bg-gradient-to-b from-pink-50 to-white">
+
+                    <div class="w-32 h-32 md:w-40 md:h-40 mx-auto mb-10 pink-gradient rounded-full p-1 shadow-xl">
+                        <img src="1000537935.png"
+                             class="w-full h-full rounded-full bg-white object-contain">
+                    </div>
+
+                    <h1 class="text-5xl md:text-8xl font-black uppercase tracking-tighter italic leading-none text-gray-900">
+                        L'AVENIR EN <br>
+                        <span class="text-pink">CONFIANCE</span>
+                    </h1>
+
+                    <p class="hero-text mt-8 text-gray-500 max-w-xl mx-auto text-lg font-medium">
+                        L'Union des Étudiants Africains d'Universiapolis Agadir.
+                        <br>
+                        Unité • Culture • Succès
+                    </p>
+
+                    <button onclick="navigate('activites')"
+                        class="mt-12 pink-gradient text-white px-8 md:px-12 py-4 rounded-full font-black uppercase tracking-widest shadow-lg">
+                        Voir nos réalisations
+                    </button>
+
+                </div>
+            `,
+
+            activites: `
+    <div class="max-w-6xl mx-auto py-20 px-6">
+
+        <!-- BOUTON RETOUR -->
+
+        <button 
+            onclick="navigate('accueil')"
+            class="mb-10 flex items-center gap-3 bg-gray-900 text-white px-6 py-3 rounded-full font-bold hover:bg-pink-500 transition">
+
+            <i class="fas fa-arrow-left"></i>
+            Retour à l'accueil
+
+        </button>
+
+        <!-- TITRE -->
+
+        <h2 class="text-5xl font-black italic uppercase mb-16 border-l-8 border-pink-500 pl-6">
+            Nos Activités
+        </h2>
+
+        <!-- ACTIVITÉS -->
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+            ${Object.keys(activities).map(key => `
+
+                <div class="activity-container"
+                     onclick="showDetails('${key}')">
+
+                    <div class="h-64 overflow-hidden">
+
+                        <img src="${activities[key].img}"
+                             class="w-full h-full object-cover transform hover:scale-110 transition duration-500">
+
+                    </div>
+
+                    <div class="p-6 text-center">
+
+                        <h3 class="text-xl font-black uppercase italic text-gray-900">
+                            ${activities[key].title}
+                        </h3>
+
+                        <p class="text-pink text-xs font-bold mt-2">
+                            DÉCOUVRIR
+                            <i class="fas fa-plus ml-1"></i>
+                        </p>
+
+                    </div>
+
+                </div>
+
+            `).join('')}
+
+        </div>
+
+    </div>
+`,
+
+            bureau: `
+            <!-- BOUTON RETOUR -->
+
+<button 
+    onclick="navigate('accueil')"
+    class="mb-10 flex items-center gap-3 bg-gray-900 text-white px-6 py-3 rounded-full font-bold hover:bg-pink-500 transition">
+
+    <i class="fas fa-arrow-left"></i>
+    Retour à l'accueil
+
+</button>
+
+                <div class="max-w-7xl mx-auto py-20 px-6 text-center">
+
+                    <h2 class="text-5xl font-black italic uppercase mb-16">
+                        Le Bureau <span class="text-pink">Exécutif</span>
+                    </h2>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+                        ${member("Président", "Gilles IMMONGAULT")}
+                        ${member("Vice-Présidente", "Chahd MECHINO")}
+                        ${member("Secrétaire Général", "Coulibaly IBRAHIM")}
+                        ${member("Porte parole","Dylane Ngomo")}
+                        ${member("responsable informatique","abdul karim.M")}
+                        ${member("Responsable communication","Jude Paul Mayombo")}
+                        ${member("Tresorier","Yacine")}
+                        ${member("Responsable Sportif","N'fally Koné")}
+                        ${member("Responsable évenementiel","DImitri Dipama")}
+
+                    </div>
+
+                </div>
+            `,
+
+            about: `
+            <!-- BOUTON RETOUR -->
+
+<button 
+    onclick="navigate('accueil')"
+    class="mb-10 flex items-center gap-3 bg-gray-900 text-white px-6 py-3 rounded-full font-bold hover:bg-pink-500 transition">
+
+    <i class="fas fa-arrow-left"></i>
+    Retour à l'accueil
+
+</button>
+
+                <div class="max-w-4xl mx-auto py-20 px-6 text-center">
+
+                    <h2 class="text-5xl font-black italic uppercase mb-10">
+                        Contactez-nous
+                    </h2>
+
+                    <div class="contact-box bg-white p-12 rounded-[40px] shadow-2xl border-2 border-pink-100">
+
+                        <p class="text-3xl mb-8 font-black text-gray-900">
+                            ueauniversiapolis@gmail.com
+                        </p>
+
+                        <div class="flex justify-center space-x-10">
+
+                            <a href="https://wa.me/212781688850"
+                               class="text-5xl text-green-500">
+                                <i class="fab fa-whatsapp"></i>
+                            </a>
+
+                            <a href="https://www.instagram.com/ueauniversiapolis"
+                               class="text-5xl text-pink">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+
+                        </div>
+
+                        <p class="mt-10 text-gray-400 uppercase font-bold tracking-widest text-sm">
+                            Agadir, Maroc
+                        </p>
+
+                    </div>
+
+                </div>
+            `
+        };
+
+        /* MEMBER */
+
+        function member(role, name){
+
+            return `
+                <div class="bg-white p-8 rounded-3xl border border-pink-50 shadow-sm">
+
+                    <div class="w-20 h-20 bg-pink-100 rounded-full mx-auto mb-4 flex items-center justify-center text-pink text-3xl">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+
+                    <h4 class="font-black text-lg uppercase italic text-pink">
+                        ${role}
+                    </h4>
+
+                    <p class="text-gray-900 font-bold text-xl">
+                        ${name}
+                    </p>
+
+                </div>
+            `;
+        }
+
+        /* NAVIGATION */
+
+        function navigate(id){
+
+            document.getElementById('main-content').innerHTML = pages[id];
+
+            document.querySelectorAll('nav button').forEach(b => {
+                b.classList.remove('nav-active');
+            });
+
+            const active = document.getElementById('nav-' + id);
+
+            if(active){
+                active.classList.add('nav-active');
+            }
+
+            window.scrollTo(0,0);
+        }
+
+        /* DETAILS */
+
+        function showDetails(id){
+
+            const data = activities[id];
+
+            document.getElementById('det-img').src = data.img;
+            document.getElementById('det-title').innerText = data.title;
+            document.getElementById('det-desc').innerText = data.desc;
+
+            document.getElementById('detail-view').style.display = 'block';
+
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeDetails(){
+
+            document.getElementById('detail-view').style.display = 'none';
+
+            document.body.style.overflow = 'auto';
+        }
+
+        /* INIT */
+
+        window.onload = () => navigate('accueil');
+
+    </script>
+
+</body>
+</html>
